@@ -1,0 +1,37 @@
+sudo: false
+language: python
+
+git:
+  depth: 4
+
+env:
+  - LUA_RUNTIME="luajit"
+    LUA_VERSION="2.0.3"
+  - LUA_RUNTIME="luajit"
+    LUA_VERSION="2.1"
+
+before_install:
+  - pip install hererocks
+  - hererocks lua_installations/$LUA_RUNTIME$LUA_VERSION/ --luarocks ^ --$LUA_RUNTIME $LUA_VERSION
+  - export PATH=$PATH:$PWD/lua_installations/$LUA_RUNTIME$LUA_VERSION/bin
+
+before_script:
+  - luarocks install busted
+  - luarocks install luacov-coveralls
+  - busted --version
+
+script:
+  - busted --coverage --output=TAP
+
+cache:
+  directories:
+    - $PWD/lua_installations
+
+after_success:
+  - luacov-coveralls
+
+notifications:
+  recipients:
+    - arne@twobeer.de
+  email:
+    on_failure: always
