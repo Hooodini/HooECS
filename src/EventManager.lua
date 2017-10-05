@@ -58,7 +58,7 @@ function EventManager:fireEvent(event)
     local name = event.class.name
     if self.eventListeners[name] then
         for _,listener in pairs(self.eventListeners[name]) do
-            listener[2](listener[1], event)
+            return listener[2](listener[1], event)
         end
     end
 end
