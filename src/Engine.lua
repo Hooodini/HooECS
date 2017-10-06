@@ -7,6 +7,7 @@ local Engine = lovetoys.class("Engine")
 function Engine:initialize()
     self.entities = {}
     self.rootEntity = lovetoys.Entity()
+    self.rootEntity.engine = self
     self.singleRequirements = {}
     self.allRequirements = {}
     self.entityLists = {}

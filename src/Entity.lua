@@ -85,4 +85,20 @@ function Entity:getComponents()
     return self.components
 end
 
+function Entity:getRootEntity()
+    local entity = self
+    while entity.getParent do
+        local parent = entity:getParent()
+        if parent.engine then
+            return parent
+        else
+            entity = parent
+        end
+    end
+end
+
+function Entity:getEngine()
+    return self:getRootEntity().engine
+end
+
 return Entity
