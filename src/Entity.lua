@@ -4,9 +4,10 @@ local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 local lovetoys = require(folderOfThisFile .. 'namespace')
 local Entity = lovetoys.class("Entity")
 
-function Entity:initialize(parent, name)
+function Entity:initialize(parent, name, active)
     self.components = {}
     self.eventManager = nil
+    self.active = active or true
     self.alive = false
     if parent then
         self:setParent(parent)
@@ -99,6 +100,20 @@ end
 
 function Entity:getEngine()
     return self:getRootEntity().engine
+end
+
+function Entity:activate()
+    if not self.active then
+        self.active = true
+        self.eventManager:fireEvent(lovetoys.EntityActivated(self))
+    end
+end
+
+function Entity:deactivate()
+    if self.active then
+        self.active = false
+        self.eventManager:fireEvent(lovetoys.EntityDeactivated(self))
+    end
 end
 
 return Entity

@@ -19,6 +19,8 @@ local function populateNamespace(ns)
     -- Requiring all Events
     ns.ComponentAdded = require(folderOfThisFile .. "src.events.ComponentAdded")
     ns.ComponentRemoved = require(folderOfThisFile .. "src.events.ComponentRemoved")
+    ns.EntityActivated = require(folderOfThisFile .. "src.events.EntityActivated")
+    ns.EntityDeactivated = require(folderOfThisFile .. "src.events.EntityDeactivated")
 
     -- Requiring the lovetoys
     ns.Entity = require(folderOfThisFile .. "src.Entity")

@@ -20,6 +20,8 @@ function Engine:initialize()
 
     self.eventManager:addListener("ComponentRemoved", self, self.componentRemoved)
     self.eventManager:addListener("ComponentAdded", self, self.componentAdded)
+    self.eventManager:addListener("EntityActivated", self, self.activateEntity)
+    self.eventManager:addListener("EntityDeactivated", self, self.deactivateEntity)
 end
 
 function Engine:addEntity(entity)
@@ -45,7 +47,7 @@ function Engine:addEntity(entity)
         -- Adding Entity to System if all requirements are granted
         if self.singleRequirements[name] then
             for _, system in pairs(self.singleRequirements[name]) do
-                self:checkRequirements(entity, system)
+                self:addEntityToSystem(entity, system)
             end
         end
     end
@@ -160,7 +162,7 @@ function Engine:addSystem(system, type)
 
     -- Checks if some of the already existing entities match the required components.
     for _, entity in pairs(self.entities) do
-        self:checkRequirements(entity, system)
+        self:addEntityToSystem(entity, system)
     end
     return system
 end
@@ -279,7 +281,7 @@ function Engine:componentAdded(event)
     -- Adding the Entity to the requiring systems
     if self.allRequirements[component] then
         for _, system in pairs(self.allRequirements[component]) do
-            self:checkRequirements(entity, system)
+            self:addEntityToSystem(entity, system)
         end
     end
 end
@@ -307,9 +309,62 @@ function Engine:getEntityCount(component)
     return count    
 end
 
-function Engine:checkRequirements(entity, system) -- luacheck: ignore self
+function Engine:activateEntity(event)
+    for _, component in pairs(event.entity.components) do
+        local name = component.class.name
+
+        if self.singleRequirements[name] then
+            for _, system in pairs(self.singleRequirements[name]) do
+                self:addEntityToSystem(event.entity, system)
+            end
+        end
+    end
+end
+
+function Engine:deactivateEntity(event)
+    for _, component in pairs(event.entity.components) do
+        local name = component.class.name
+
+        if self.singleRequirements[name] then
+            for _, system in pairs(self.singleRequirements[name]) do
+                self:removeEntityFromSystem(event.entity, system)
+            end
+        end
+    end
+end
+
+function Engine:addEntityToSystem(entity, system) -- luacheck: ignore self
+    local categories
+    entity, categories = self:meetsRequirements(entity, system)
+    if entity then
+        if #categories > 0 then
+            for _, category in pairs() do
+                system:addEntity(entity, category)
+            end
+        else
+            system:addEntity(entity)
+        end
+    end
+end
+
+function Engine:removeEntityFromSystem(entity, system)
+    local categories
+    entity, categories = self:meetsRequirements(entity, system)
+    if entity then
+        if #categories > 0 then
+            for _, category in pairs() do
+                system:removeEntity(entity, category)
+            end
+        else
+            system:removeEntity(entity)
+        end
+    end
+end
+
+function Engine:meetsRequirements(entity, system)
     local meetsrequirements = true
-    local category = nil
+    local categories = {}
+
     for index, req in pairs(system:requires()) do
         if type(req) == "string" then
             if not entity.components[req] then
@@ -325,13 +380,14 @@ function Engine:checkRequirements(entity, system) -- luacheck: ignore self
                 end
             end
             if meetsrequirements == true then
-                category = index
-                system:addEntity(entity, category)
+                table.insert(categories, index)
             end
         end
     end
-    if meetsrequirements == true and category == nil then
-        system:addEntity(entity)
+    if meetsrequirements == true and categories == nil then
+        return entity
+    elseif meetsrequirements == true then
+        return entity, categories
     end
 end
 
