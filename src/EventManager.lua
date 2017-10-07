@@ -61,7 +61,9 @@ function EventManager:fireEvent(event)
         for _,listener in pairs(self.eventListeners[name]) do
             table.insert(returns, listener[2](listener[1], event))
         end
-        return returns
+        if #returns > 0 then
+            return returns
+        end
     end
 end
 
