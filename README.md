@@ -69,6 +69,12 @@ local class = lovetoys.class ()
 ### Entity
 The Entity is the basic building block of your game. You can loosely think of it as an object in your game, such as a player or a wall. From the technical side, it basically represents a collection of components.
 
+####Entity.active
+
+- boolean
+
+Whether this entity is active or not. Inactive entities will not be added to systems and must be activated manually in order to be processed. 
+
 #### Entity(parent)
 - **parent** (Entity) - Parent entity
 
@@ -120,6 +126,20 @@ Returns the component or `nil` if the Entity has no component with the given `na
 
 Returns the list that contains all components.
 
+#### Entity:getEngine()
+
+Returns the engine this entity belongs to.
+
+#### Entity:activate()
+
+If not already active, adds the entity to all appropriate systems. The entity needs to belong to an engine for this to work. 
+
+#### Entity:deactivate()
+
+If active, removes the entity from all systems without removing the entity from the engine.
+
+
+
 ### Component
 Collection of functions for creating and working with Component classes. There is no `Component` class; As components are only 'data bags', you can just use standard middleclass classes to implement your components.
 
@@ -152,6 +172,10 @@ local Color, Transform, Drawable = Component.load({"Color", "Transform", "Drawab
 -- Create a component for the color black
 Color(0, 0, 0)
 ```
+
+#### Component:onComponentRemoved()
+
+Overwrite this method in your component if you want to react when the component is removed from it's entity.
 
 #### Component.create(name, [fields, defaults])
 - **fields** (Table) - A list of Strings specifying the property names of the new component. The constructor of the component class will accept each of these properties as arguments, in the order they appear in the `fields` list.
@@ -225,6 +249,11 @@ This method is going to be called by the engine every draw.
 - **entity** (Entity) - The entity added
 
 Overwrite this method in your system if you want to react when new entities are added to it.
+
+#### System:onRemoveEntity(entity)
+- **entity** (Entity) - The entity removed
+
+Overwrite this method in your system if you want to react when an entity is removed from it.
 
 ### Engine
 The engine is the most important part of the lovetoys and the most frequently used interface. It manages all entities, systems and their requirements, for you.
@@ -345,7 +374,17 @@ Removes a listener from this particular Event.
 #### EventManager:fireEvent(event)
 - **event** (Event) - Instance of the event
 
-This function pipes the event through to every listener that is registered to the class-name of the event and triggers `listener:fireEvent(event)`.
+This function pipes the event through to every listener that is registered to the class-name of the event and triggers.
+Events can return data which will be stored in an array table. Each entry will be the return value(s) from a specific listener.
+Useful to get feedback on whether the event was used or generally return data. Returns nil if not data was returned by the listeners.
+
+```
+returns = listener:fireEvent(event)
+
+for _, dataEntry in ipairs(returns) do
+    -- Handle return values
+end
+```
 
 ## Testing
 You can find the tests in the `spec` folder. They are defined using the [busted](http://olivinelabs.com/busted) test framework.
