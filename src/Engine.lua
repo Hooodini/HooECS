@@ -1,17 +1,17 @@
 -- Getting folder that contains our src
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
-local lovetoys = require(folderOfThisFile .. 'namespace')
-local Engine = lovetoys.class("Engine")
+local HooECS = require(folderOfThisFile .. 'namespace')
+local Engine = HooECS.class("Engine")
 
 function Engine:initialize()
     self.entities = {}
-    self.rootEntity = lovetoys.Entity()
+    self.rootEntity = HooECS.Entity()
     self.rootEntity.engine = self
     self.singleRequirements = {}
     self.allRequirements = {}
     self.entityLists = {}
-    self.eventManager = lovetoys.EventManager()
+    self.eventManager = HooECS.EventManager()
 
     self.systems = {}
     self.systemRegistry = {}
@@ -95,15 +95,15 @@ function Engine:removeEntity(entity, removeChildren, newParent)
         -- Removing entity from engine
         self.entities[entity.id] = nil
     else
-        lovetoys.debug("Engine: Trying to remove non existent entity from engine.")
+        HooECS.debug("Engine: Trying to remove non existent entity from engine.")
         if entity.id then
-            lovetoys.debug("Engine: Entity id: " .. entity.id)
+            HooECS.debug("Engine: Entity id: " .. entity.id)
         else
-            lovetoys.debug("Engine: Entity has not been added to any engine yet. (No entity.id)")
+            HooECS.debug("Engine: Entity has not been added to any engine yet. (No entity.id)")
         end
-        lovetoys.debug("Engine: Entity's components:")
+        HooECS.debug("Engine: Entity's components:")
         for index, component in pairs(entity.components) do
-            lovetoys.debug(index, component)
+            HooECS.debug(index, component)
         end
     end
 end
@@ -113,19 +113,19 @@ function Engine:addSystem(system, type)
 
     -- Check if the specified type is correct
     if type ~= nil and type ~= "draw" and type ~= "update" then
-        lovetoys.debug("Engine: Trying to add System " .. name .. "with invalid type " .. type .. ". Aborting")
+        HooECS.debug("Engine: Trying to add System " .. name .. "with invalid type " .. type .. ". Aborting")
         return
     end
 
     -- Check if a type should be specified
     if system.draw and system.update and not type then
-        lovetoys.debug("Engine: Trying to add System " .. name .. ", which has an update and a draw function, without specifying type. Aborting")
+        HooECS.debug("Engine: Trying to add System " .. name .. ", which has an update and a draw function, without specifying type. Aborting")
         return
     end
 
     -- Check if the user is accidentally adding two instances instead of one
     if self.systemRegistry[name] and self.systemRegistry[name] ~= system then
-        lovetoys.debug("Engine: Trying to add two different instances of the same system. Aborting.")
+        HooECS.debug("Engine: Trying to add two different instances of the same system. Aborting.")
         return
     end
 
@@ -135,7 +135,7 @@ function Engine:addSystem(system, type)
     -- This triggers if the system doesn't have update and draw and it's already existing.
     elseif not (system.update and system.draw) then
         if self.systemRegistry[name] then
-            lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
+            HooECS.debug("Engine: System " .. name .. " already exists. Aborting")
             return
         end
     end
@@ -144,7 +144,7 @@ function Engine:addSystem(system, type)
     if system.draw and (not type or type == "draw") then
         for _, registeredSystem in pairs(self.systems["draw"]) do
             if registeredSystem.class.name == name then
-                lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
+                HooECS.debug("Engine: System " .. name .. " already exists. Aborting")
                 return
             end
         end
@@ -153,7 +153,7 @@ function Engine:addSystem(system, type)
     elseif system.update and (not type or type == "update") then
         for _, registeredSystem in pairs(self.systems["update"]) do
             if registeredSystem.class.name == name then
-                lovetoys.debug("Engine: System " .. name .. " already exists. Aborting")
+                HooECS.debug("Engine: System " .. name .. " already exists. Aborting")
                 return
             end
         end
@@ -185,7 +185,7 @@ function Engine:registerSystem(system)
     end
 
     -- case: system:requires() returns a table of tables which contain strings
-    if lovetoys.util.firstElement(system:requires()) and type(lovetoys.util.firstElement(system:requires())) == "table" then
+    if HooECS.util.firstElement(system:requires()) and type(HooECS.util.firstElement(system:requires())) == "table" then
         for index, componentList in pairs(system:requires()) do
             -- Registering at singleRequirements
             local component = componentList[1]
@@ -217,7 +217,7 @@ function Engine:stopSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = false
     else
-        lovetoys.debug("Engine: Trying to stop not existing System: " .. name)
+        HooECS.debug("Engine: Trying to stop not existing System: " .. name)
     end
 end
 
@@ -225,7 +225,7 @@ function Engine:startSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = true
     else
-        lovetoys.debug("Engine: Trying to start not existing System: " .. name)
+        HooECS.debug("Engine: Trying to start not existing System: " .. name)
     end
 end
 
@@ -233,7 +233,7 @@ function Engine:toggleSystem(name)
     if self.systemRegistry[name] then
         self.systemRegistry[name].active = not self.systemRegistry[name].active
     else
-        lovetoys.debug("Engine: Trying to toggle not existing System: " .. name)
+        HooECS.debug("Engine: Trying to toggle not existing System: " .. name)
     end
 end
 

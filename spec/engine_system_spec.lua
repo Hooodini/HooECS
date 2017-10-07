@@ -1,5 +1,5 @@
-local lovetoys = require('lovetoys')
-lovetoys.initialize({ globals = true })
+local HooECS = require('HooECS')
+HooECS.initialize({ globals = true })
 
 describe('Engine', function()
     local UpdateSystem, DrawSystem, MultiSystem, Component1, Component2
@@ -8,7 +8,7 @@ describe('Engine', function()
 
     setup(function()
         -- Creates a Update System
-        UpdateSystem = lovetoys.class('UpdateSystem', System)
+        UpdateSystem = HooECS.class('UpdateSystem', System)
         function UpdateSystem:initialize()
             System.initialize(self)
             self.entitiesAdded = 0
@@ -27,7 +27,7 @@ describe('Engine', function()
         end
 
         -- Creates a Draw System
-        DrawSystem = lovetoys.class('DrawSystem', System)
+        DrawSystem = HooECS.class('DrawSystem', System)
         function DrawSystem:requires()
             return {'Component1'}
         end
@@ -39,7 +39,7 @@ describe('Engine', function()
         end
 
         -- Creates a system with update and draw function
-        BothSystem = lovetoys.class('BothSystem', System)
+        BothSystem = HooECS.class('BothSystem', System)
         function BothSystem:requires()
             return {'Component1', 'Component2'}
         end
@@ -51,7 +51,7 @@ describe('Engine', function()
         function BothSystem:draw() end
 
         -- Creates a System with multiple requirements
-        MultiSystem = lovetoys.class('MultiSystem', System)
+        MultiSystem = HooECS.class('MultiSystem', System)
         function MultiSystem:requires()
             return {name1 = {'Component1'}, name2 = {'Component2'}}
         end
@@ -210,24 +210,24 @@ describe('Engine', function()
     end)
 
     it('Calling system status functions on not existing systems throws debug message.', function()
-        -- Mock lovetoys debug function
-        local debug_spy = spy.on(lovetoys, 'debug')
+        -- Mock HooECS debug function
+        local debug_spy = spy.on(HooECS, 'debug')
 
         engine:startSystem('weirdstufflol')
         -- Assert that the debug function has been called
         -- and clear spy call history
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:clear()
+        HooECS.debug:clear()
 
         engine:toggleSystem('weirdstufflol')
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:clear()
+        HooECS.debug:clear()
 
         engine:stopSystem('weirdstufflol')
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:clear()
+        HooECS.debug:clear()
 
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
 
@@ -242,28 +242,28 @@ describe('Engine', function()
     end)
 
     it(':addSystem(system, "derp") fails', function()
-        local debug_spy = spy.on(lovetoys, 'debug')
+        local debug_spy = spy.on(HooECS, 'debug')
 
         engine:addSystem(drawSystem, 'derp')
         assert.is_nil(engine.systemRegistry['DrawSystem'])
 
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
     it('refuses to add two instances of the same system', function()
-        local debug_spy = spy.on(lovetoys, 'debug')
+        local debug_spy = spy.on(HooECS, 'debug')
 
         engine:addSystem(DrawSystem())
         engine:addSystem(DrawSystem())
 
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:clear()
+        HooECS.debug:clear()
 
         engine:addSystem(BothSystem(), 'update')
         engine:addSystem(BothSystem(), 'draw')
 
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 end)

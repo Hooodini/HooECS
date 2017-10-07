@@ -13,9 +13,9 @@ local classes = {
 describe('Configuration', function()
     after_each(
     function()
-        local lovetoys = require('lovetoys')
-        lovetoys.config = {}
-        lovetoys.initialized = false
+        local HooECS = require('HooECS')
+        HooECS.config = {}
+        HooECS.initialized = false
     end
     )
 
@@ -29,8 +29,8 @@ describe('Configuration', function()
                 return env[key]
             end
         })
-        local lovetoys = require('lovetoys')
-        lovetoys.initialize({ globals = true })
+        local HooECS = require('HooECS')
+        HooECS.initialize({ globals = true })
 
         for _, entry in ipairs(classes) do
             assert.not_nil(env[entry])
@@ -40,8 +40,8 @@ describe('Configuration', function()
     end)
 
     it('doesnt modify the global table by default', function()
-        local lovetoys = require('lovetoys')
-        lovetoys.initialize({})
+        local HooECS = require('HooECS')
+        HooECS.initialize({})
 
         for _, entry in ipairs(classes) do
             assert.is_nil(_G[entry])

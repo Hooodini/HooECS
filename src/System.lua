@@ -1,8 +1,8 @@
 -- Getting folder that contains our src
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
-local lovetoys = require(folderOfThisFile .. 'namespace')
-local System = lovetoys.class("System")
+local HooECS = require(folderOfThisFile .. 'namespace')
+local System = HooECS.class("System")
 
 function System:initialize()
     -- Liste aller Entities, die die RequiredComponents dieses Systems haben
@@ -72,12 +72,12 @@ function System:pickRequiredComponents(entity)
     local components = {}
     local requirements = self:requires()
 
-    if type(lovetoys.util.firstElement(requirements)) == "string" then
+    if type(HooECS.util.firstElement(requirements)) == "string" then
         for _, componentName in pairs(requirements) do
             table.insert(components, entity:get(componentName))
         end
-    elseif type(lovetoys.util.firstElement(requirements)) == "table" then
-        lovetoys.debug("System: :pickRequiredComponents() is not supported for systems with multiple component constellations")
+    elseif type(HooECS.util.firstElement(requirements)) == "table" then
+        HooECS.debug("System: :pickRequiredComponents() is not supported for systems with multiple component constellations")
         return nil
     end
     return unpack(components)

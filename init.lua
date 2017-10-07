@@ -1,10 +1,10 @@
 -- Getting folder that contains our src
-local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
+local folderOfThisFile = (...) .. "."
 
-local lovetoys = require(folderOfThisFile .. 'src.namespace')
+local HooECS = require(folderOfThisFile .. 'src.namespace')
 
-function lovetoys.debug(message)
-    if lovetoys.config.debug then
+function HooECS.debug(message)
+    if HooECS.config.debug then
         print(message)
     end
 end
@@ -22,7 +22,7 @@ local function populateNamespace(ns)
     ns.EntityActivated = require(folderOfThisFile .. "src.events.EntityActivated")
     ns.EntityDeactivated = require(folderOfThisFile .. "src.events.EntityDeactivated")
 
-    -- Requiring the lovetoys
+    -- Requiring HooECS
     ns.Entity = require(folderOfThisFile .. "src.Entity")
     ns.Engine = require(folderOfThisFile .. "src.Engine")
     ns.System = require(folderOfThisFile .. "src.System")
@@ -30,27 +30,27 @@ local function populateNamespace(ns)
     ns.Component = require(folderOfThisFile .. "src.Component")
 end
 
-function lovetoys.initialize(opts)
+function HooECS.initialize(opts)
     if opts == nil then opts = {} end
-    if not lovetoys.initialized then
-        lovetoys.config = {
+    if not HooECS.initialized then
+        HooECS.config = {
             debug = false,
             globals = false
         }
 
         for name, val in pairs(opts) do
-            lovetoys.config[name] = val
+            HooECS.config[name] = val
         end
 
-        populateNamespace(lovetoys)
+        populateNamespace(HooECS)
 
-        if lovetoys.config.globals then
+        if HooECS.config.globals then
             populateNamespace(_G)
         end
-        lovetoys.initialized = true
+        HooECS.initialized = true
     else
-        print('Lovetoys is already initialized.')
+        print('HooECS is already initialized.')
     end
 end
 
-return lovetoys
+return HooECS

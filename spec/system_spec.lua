@@ -1,5 +1,5 @@
-local lovetoys = require('lovetoys')
-lovetoys.initialize({ globals = true })
+local HooECS = require('HooECS')
+HooECS.initialize({ globals = true })
 
 describe('System', function()
     local MultiSystem, RequireSystem
@@ -8,12 +8,12 @@ describe('System', function()
 
     setup(
     function()
-        MultiSystem = lovetoys.class('MultiSystem', System)
+        MultiSystem = HooECS.class('MultiSystem', System)
         function MultiSystem:requires()
             return {ComponentType1 = {'Component1'}, ComponentType2 = {'Component'}}
         end
 
-        RequireSystem = lovetoys.class('RequireSystem', System)
+        RequireSystem = HooECS.class('RequireSystem', System)
         function RequireSystem:requires()
             return {'Component1', 'Component2'}
         end
@@ -61,7 +61,7 @@ describe('System', function()
 
     it(':pickRequiredComponents() returns the requested components', function()
 
-        local addedComponent1 = lovetoys.class('Component1')()
+        local addedComponent1 = HooECS.class('Component1')()
         entity:add(addedComponent1)
         requireSystem:addEntity(entity)
 
@@ -72,19 +72,19 @@ describe('System', function()
 
     it(':pickRequiredComponents() throws debug message on multiple requirement systems', function()
 
-        local addedComponent1 = lovetoys.class('Component1')()
+        local addedComponent1 = HooECS.class('Component1')()
         entity:add(addedComponent1)
         multiSystem:addEntity(entity)
 
-        -- Mock lovetoys debug function
-        local debug_spy = spy.on(lovetoys, 'debug')
+        -- Mock HooECS debug function
+        local debug_spy = spy.on(HooECS, 'debug')
 
         local returnValue = multiSystem:pickRequiredComponents(entity)
         assert.are.equal(returnValue, nil)
 
         -- Check for called debug message
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
 end)

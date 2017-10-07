@@ -1,9 +1,9 @@
-local lovetoys = require('lovetoys')
-lovetoys.initialize({ globals = true })
+local HooECS = require('HooECS')
+HooECS.initialize({ globals = true })
 
 describe('Component', function()
     it(':create with defaults creates a Component with default values', function()
-        local c = lovetoys.Component.create('TestComponent',
+        local c = HooECS.Component.create('TestComponent',
           {'defaultField', 'emptyField'},
           {defaultField = 'defaultValue'})
 
@@ -14,9 +14,9 @@ describe('Component', function()
 
     it(':load returns the specified components', function()
         local c1 = Component.create('TestComponent1')
-        local c2 = lovetoys.class('TestComponent2')
+        local c2 = HooECS.class('TestComponent2')
         Component.register(c2)
-        local c3 = lovetoys.class('TestComponent3')
+        local c3 = HooECS.class('TestComponent3')
 
         local loaded1, loaded2, loaded3 = Component.load({
             'TestComponent1', 'TestComponent2', 'TestComponent3'

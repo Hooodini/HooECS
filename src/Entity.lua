@@ -1,8 +1,8 @@
 -- Getting folder that contains our src
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
-local lovetoys = require(folderOfThisFile .. 'namespace')
-local Entity = lovetoys.class("Entity")
+local HooECS = require(folderOfThisFile .. 'namespace')
+local Entity = HooECS.class("Entity")
 
 function Entity:initialize(parent, name, active)
     self.components = {}
@@ -23,11 +23,11 @@ end
 function Entity:add(component)
     local name = component.class.name
     if self.components[name] then
-        lovetoys.debug("Entity: Trying to add Component '" .. name .. "', but it's already existing. Please use Entity:set to overwrite a component in an entity.")
+        HooECS.debug("Entity: Trying to add Component '" .. name .. "', but it's already existing. Please use Entity:set to overwrite a component in an entity.")
     else
         self.components[name] = component
         if self.eventManager then
-            self.eventManager:fireEvent(lovetoys.ComponentAdded(self, name))
+            self.eventManager:fireEvent(HooECS.ComponentAdded(self, name))
         end
     end
 end
@@ -53,10 +53,10 @@ function Entity:remove(name)
         if self.components[name].onComponentRemoved then self.components[name].onComponentRemoved() end
         self.components[name] = nil
     else
-        lovetoys.debug("Entity: Trying to remove unexisting component " .. name .. " from Entity. Please fix this")
+        HooECS.debug("Entity: Trying to remove unexisting component " .. name .. " from Entity. Please fix this")
     end
     if self.eventManager then
-        self.eventManager:fireEvent(lovetoys.ComponentRemoved(self, name))
+        self.eventManager:fireEvent(HooECS.ComponentRemoved(self, name))
     end
 end
 
@@ -105,14 +105,14 @@ end
 function Entity:activate()
     if not self.active then
         self.active = true
-        self.eventManager:fireEvent(lovetoys.EntityActivated(self))
+        self.eventManager:fireEvent(HooECS.EntityActivated(self))
     end
 end
 
 function Entity:deactivate()
     if self.active then
         self.active = false
-        self.eventManager:fireEvent(lovetoys.EntityDeactivated(self))
+        self.eventManager:fireEvent(HooECS.EntityDeactivated(self))
     end
 end
 

@@ -1,5 +1,5 @@
-local lovetoys = require('lovetoys')
-lovetoys.initialize({ globals = true })
+local HooECS = require('HooECS')
+HooECS.initialize({ globals = true })
 
 describe('Engine', function()
     local TestSystem, MultiSystem
@@ -9,13 +9,13 @@ describe('Engine', function()
 
     setup(
     function()
-        TestSystem = lovetoys.class('TestSystem', System)
+        TestSystem = HooECS.class('TestSystem', System)
         function TestSystem:requires()
             return {'Component1'}
         end
 
         -- Creates a System with multiple requirements
-        MultiSystem = lovetoys.class('MultiSystem', System)
+        MultiSystem = HooECS.class('MultiSystem', System)
         function MultiSystem:requires()
             return {name1 = {'Component1'}, name2 = {'Component1', 'Component2'}}
         end
@@ -112,7 +112,7 @@ describe('Engine', function()
 
         local Animal, Dog = Component.create('Animal'), Component.create('Dog')
 
-        local AnimalSystem = lovetoys.class('AnimalSystem', System)
+        local AnimalSystem = HooECS.class('AnimalSystem', System)
 
         function AnimalSystem:update() end
 
@@ -218,8 +218,8 @@ describe('Engine', function()
     end)
 
     it(':removeEntity() unregistered entity from Engine', function()
-        -- Mock lovetoys debug function
-        local debug_spy = spy.on(lovetoys, 'debug')
+        -- Mock HooECS debug function
+        local debug_spy = spy.on(HooECS, 'debug')
 
         -- Add Component to entity and remove entity from engine
         -- before it's registered to the engine.
@@ -228,13 +228,13 @@ describe('Engine', function()
 
         -- Assert that the debug function hast been called
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:clear()
+        HooECS.debug:clear()
 
         entity.id = 1
         engine:removeEntity(entity)
         assert.spy(debug_spy).was_called()
 
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
     it('Entity:remove() removes entity from single system target list, after removing component', function()

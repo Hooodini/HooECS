@@ -1,42 +1,38 @@
 <h1 align="center">HooECS</h1>
 
-HooECS is a fork of Lovetoys. Both this readme and most of the code originate there. Including the latest releases and similar.
-As of right now you can safely use Lovetoys instead of HooECS.
-When there are changes significant enough to warrant a release there will be a proper readme overhaul!
-
+Until the first release of HooECS, the following links will refer to lovetoys. Use the original instead if you're unsure about using HooECS.
 
 [![GitHub release](https://img.shields.io/github/release/lovetoys/lovetoys.svg?maxAge=2592000)](https://github.com/lovetoys/lovetoys/releases/latest)
 [![Build Status](https://travis-ci.org/lovetoys/lovetoys.svg?branch=master)](https://travis-ci.org/lovetoys/lovetoys) [![Coverage Status](https://coveralls.io/repos/github/lovetoys/lovetoys/badge.svg?branch=master)](https://coveralls.io/github/lovetoys/lovetoys?branch=master)
 
 
-lovetoys is an Entity Component System framework for game development with lua. Originally written for the LÖVE 2D game engine, it is actually compatible with pretty much any game that uses lua!
+HooECS is an Entity Component System framework for game development with lua. Originally written for the LÖVE 2D game engine, it is actually compatible with pretty much any game that uses lua!
 It is inspired by [Richard Lords Introduction](http://www.richardlord.net/blog/what-is-an-entity-framework) to ECS. If you don't have any idea what this entity component stuff is all about, click that link and give it a read! It's totally worth it!
+The original software was written by Arne Beer and Rafael Epplee under the name [lovetoys](https://github.com/lovetoys/lovetoys).
 
-lovetoys is a full-featured game development framework, not only providing the core parts like Entity, Component and System classes but also a Publish-Subscribe messaging system as well as a Scene Graph, enabling you to build even complex games easily and in a structured way.
+HooECS is a full-featured game development framework, not only providing the core parts like Entity, Component and System classes but also a Publish-Subscribe messaging system as well as a Scene Graph, enabling you to build even complex games easily and in a structured way.
 
-Though we have not reached version 1.0 yet, the software is well-tested, used in multiple games and considered stable. If you happen to find any bugs, please create an issue and report them. Or, if you're feeling adventurous, create a pull request :)
+Though I have not reached version 1.0 yet, the software is well-tested, used in multiple games and considered stable. If you happen to find any bugs, please create an issue and report them. Or, if you're feeling adventurous, create a pull request :)
 
 ## Installation
 
-The recommended way of installing lovetoys is by creating a submodule and cloning it right into your git repo.
-Another way is to just download a [tarball](https://github.com/lovetoys/lovetoys/releases) and copy the files into your project folder.
-The third way is to use Luarocks. In your shell, use `luarocks install lovetoys`.
+The recommended way of installing HooECS is by creating a submodule and cloning it right into your git repo.
 
-To require lovetoys and initialize it with the default options, use the following:
+To require HooECS and initialize it with the default options, use the following:
 
 ```lua
-local lovetoys = require('lovetoys.lovetoys')
-lovetoys.initialize()
+local HooECS = require('HooECS')
+HooECS.initialize()
 ```
 
-For an example on how to integrate the lovetoys with love2d, have a look at our [example](https://github.com/lovetoys/lovetoys-examples) repository.
+For an example on how to integrate the HooECS with love2d, have a look at the lovetoys example [example](https://github.com/lovetoys/lovetoys-examples) repository. (HooECS will stay fully compatible with lovetoys code for the foreseeable future)
 
 ### Configuration
-After requiring, configure lovetoys by passing a configuration table to the `initialize` function.
+After requiring, configure HooECS by passing a configuration table to the `initialize` function.
 For example, if you want debug output, pass the option `debug = true`:
 
 ```lua
-lovetoys.initialize({
+HooECS.initialize({
     debug = true
 })
 ```
@@ -45,25 +41,25 @@ The following table lists all available options:
 
 | Name | Type | Default | Meaning |
 | --- | --- | --- | --- |
-| debug | boolean | false | Makes lovetoys print warnings and notifications to stdout. |
-| globals | boolean | false | If true, lovetoys will make all its classes available via the global namespace. (e.g. Entity instead of lovetoys.Entity) |
+| debug | boolean | false | Makes HooECS print warnings and notifications to stdout. |
+| globals | boolean | false | If true, HooECS will make all its classes available via the global namespace. (e.g. Entity instead of HooECS.Entity) |
 
-**Note:** Once you've called `initialize`, the configuration will be the same every time you `require('lovetoys.lovetoys')`.
+**Note:** Once you've called `initialize`, the configuration will be the same every time you `require('HooECS')`.
 
 ## API Reference
 
-lovetoys primarily consists of a few classes that are implemented using [middleclass](https://github.com/kikito/middleclass). By default, they are available via the lovetoys object:
+HooECS primarily consists of a few classes that are implemented using [middleclass](https://github.com/kikito/middleclass). By default, they are available via the HooECS object:
 
 ```lua
-local lovetoys = require('lovetoys')
+local HooECS = require('HooECS')
 -- Example: using constructors
-local entity = lovetoys.Entity()
-local system = lovetoys.System()
-local engine = lovetoys.Engine()
-local component = lovetoys.Component()
-local eventManager = lovetoys.EventManager()
+local entity = HooECS.Entity()
+local system = HooECS.System()
+local engine = HooECS.Engine()
+local component = HooECS.Component()
+local eventManager = HooECS.EventManager()
 -- the middleclass `class` object
-local class = lovetoys.class ()
+local class = HooECS.class ()
 ```
 
 ### Entity
@@ -256,7 +252,7 @@ Overwrite this method in your system if you want to react when new entities are 
 Overwrite this method in your system if you want to react when an entity is removed from it.
 
 ### Engine
-The engine is the most important part of the lovetoys and the most frequently used interface. It manages all entities, systems and their requirements, for you.
+The engine is the most important part of the HooECS and the most frequently used interface. It manages all entities, systems and their requirements, for you.
 
 #### Engine()
 Creates a new engine object. Every engine creates a rootEntity which becomes parent of all entities that don't have a parent yet.
@@ -268,9 +264,9 @@ Returns the root entity. Modify it to your needs!
 - **system** (System) - Instance of the system to be added
 - **type** (String) - optional; Should be either "draw" or "update"
 
-This function registers the system in the engine. The systems' functions will be called in the order they've been added. As long as the system implements either the `update` or the `draw` function, lovetoys will guess the `type` parameter for you.
+This function registers the system in the engine. The systems' functions will be called in the order they've been added. As long as the system implements either the `update` or the `draw` function, HooECS will guess the `type` parameter for you.
 
-**Note:** If a system implements both `draw` and `update` functions, you will need to specify the `type` and add the system twice, once to draw and once to update. Otherwise lovetoys couldn't know in what order to execute the `update` and `draw` methods.
+**Note:** If a system implements both `draw` and `update` functions, you will need to specify the `type` and add the system twice, once to draw and once to update. Otherwise HooECS couldn't know in what order to execute the `update` and `draw` methods.
 
 #### Engine:stopSystem(system)
 - **system** (String) - the name of the system
@@ -323,8 +319,8 @@ Updates all draw systems.
 For a more detailed and commented version with collisions and some other examples check the [main.lua file of the lovetoys example game](https://github.com/lovetoys/example/blob/master/main.lua).
 
 ```lua
--- Importing lovetoys
-require("lib.lovetoys.lovetoys")
+-- Importing HooECS
+require("lib.HooECS")
 
 function love.load()
     engine = Engine()
@@ -389,7 +385,7 @@ end
 ## Testing
 You can find the tests in the `spec` folder. They are defined using the [busted](http://olivinelabs.com/busted) test framework.
 
-To run the suite, install busted and simply execute `busted` in the lovetoys directory.
+To run the suite, install busted and simply execute `busted` in the HooECS directory.
 
 * * *
 

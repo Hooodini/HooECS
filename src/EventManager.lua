@@ -1,8 +1,8 @@
 -- Getting folder that contains our src
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
-local lovetoys = require(folderOfThisFile .. 'namespace')
-local EventManager = lovetoys.class("EventManager")
+local HooECS = require(folderOfThisFile .. 'namespace')
+local EventManager = HooECS.class("EventManager")
 
 function EventManager:initialize()
     self.eventListeners = {}
@@ -19,12 +19,12 @@ function EventManager:addListener(eventName, listener, listenerFunction)
 
 
     if not listener.class or (listener.class and not listener.class.name) then
-        lovetoys.debug('Eventmanager: The listener has to implement a listener.class.name field.')
+        HooECS.debug('Eventmanager: The listener has to implement a listener.class.name field.')
     end
 
     for _, registeredListener in pairs(self.eventListeners[eventName]) do
         if registeredListener[1].class == listener.class then
-            lovetoys.debug(
+            HooECS.debug(
                 string.format("Eventmanager: EventListener for {} already exists.", eventName))
             return
         end
@@ -32,9 +32,9 @@ function EventManager:addListener(eventName, listener, listenerFunction)
     if type(listenerFunction) == 'function' then
         table.insert(self.eventListeners[eventName], {listener, listenerFunction})
     else
-        lovetoys.debug('Eventmanager: Third parameter has to be a function! Please check listener for ' .. eventName)
+        HooECS.debug('Eventmanager: Third parameter has to be a function! Please check listener for ' .. eventName)
         if listener.class and listener.class.name then
-            lovetoys.debug('Eventmanager: Listener class name: ' .. listener.class.name)
+            HooECS.debug('Eventmanager: Listener class name: ' .. listener.class.name)
         end
     end
 end
@@ -48,9 +48,9 @@ function EventManager:removeListener(eventName, listener)
                 return
             end
         end
-        lovetoys.debug(string.format("Eventmanager: Listener %s to be deleted on Event %s  is not existing.", listener.class.name, eventName))
+        HooECS.debug(string.format("Eventmanager: Listener %s to be deleted on Event %s  is not existing.", listener.class.name, eventName))
     end
-    lovetoys.debug(string.format("Eventmanager: Event %s listener should be removed from is not existing ", eventName))
+    HooECS.debug(string.format("Eventmanager: Event %s listener should be removed from is not existing ", eventName))
 end
 
 -- Firing an event. All registered listener will react to this event
@@ -59,7 +59,7 @@ function EventManager:fireEvent(event)
     if self.eventListeners[name] then
         local returns = {}
         for _,listener in pairs(self.eventListeners[name]) do
-            table.insert(returns, listener[2](listener[1], event))
+            table.insert(returns, {listener[2](listener[1], event)})
         end
         if #returns > 0 then
             return returns

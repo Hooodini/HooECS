@@ -1,5 +1,5 @@
-local lovetoys = require('lovetoys')
-lovetoys.initialize({ globals = true, debugging = true })
+local HooECS = require('HooECS')
+HooECS.initialize({ globals = true, debugging = true })
 
 describe('Entity', function()
     local TestComponent, TestComponent1, TestComponent2, TestComponent3
@@ -51,10 +51,10 @@ describe('Entity', function()
     end)
 
     it(':remove() prints debug message if Component does not exist', function()
-        local debug_spy = spy.on(lovetoys, 'debug')
+        local debug_spy = spy.on(HooECS, 'debug')
         entity:remove('TestComponent')
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
     it(':get() gets a Component', function()

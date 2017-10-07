@@ -1,5 +1,5 @@
-local lovetoys = require('lovetoys')
-lovetoys.initialize({ globals = true })
+local HooECS = require('HooECS')
+HooECS.initialize({ globals = true })
 
 describe('Eventmanager', function()
     local Listener, TestEvent
@@ -8,13 +8,13 @@ describe('Eventmanager', function()
     setup(
     function()
         -- Test Listener
-        Listener = lovetoys.class('Listener')
+        Listener = HooECS.class('Listener')
         Listener.number = 0
         function Listener:test(event)
             self.number = event.number
         end
         -- Test Event
-        TestEvent = lovetoys.class('TestEvent')
+        TestEvent = HooECS.class('TestEvent')
         TestEvent.number = 12
     end
     )
@@ -45,29 +45,29 @@ describe('Eventmanager', function()
     end)
 
     it('addListener() without function throws debug message', function()
-        -- Mock lovetoys debug function
-        local debug_spy = spy.on(lovetoys, 'debug')
+        -- Mock HooECS debug function
+        local debug_spy = spy.on(HooECS, 'debug')
 
         eventManager:addListener('TestEvent', listener, 'lol')
 
         -- Assert that the debug function hast been called
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
     it('addListener() without listener.class.name on listener throws debug message', function()
-        -- Mock lovetoys debug function
-        local debug_spy = spy.on(lovetoys, 'debug')
+        -- Mock HooECS debug function
+        local debug_spy = spy.on(HooECS, 'debug')
 
         eventManager:addListener('TestEvent', {class={}}, listener.test)
 
         -- Assert that the debug function hast been called
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:clear()
+        HooECS.debug:clear()
 
         eventManager:addListener('TestEvent', {}, listener.test)
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
     it('removeListener() removes Listener', function()
@@ -80,21 +80,21 @@ describe('Eventmanager', function()
     end)
 
     it('removeListener() on unregistered listener throws debug message', function()
-        -- Mock lovetoys debug function
-        local debug_spy = spy.on(lovetoys, 'debug')
+        -- Mock HooECS debug function
+        local debug_spy = spy.on(HooECS, 'debug')
 
         eventManager:removeListener('TestEvent', listener)
 
         -- Assert that the debug function hast been called
         assert.spy(debug_spy).was_called()
-        lovetoys.debug:clear()
+        HooECS.debug:clear()
 
         eventManager:addListener('TestEvent', listener, listener.test)
         eventManager:removeListener('TestEvent', listener)
         eventManager:removeListener('TestEvent', listener)
         assert.spy(debug_spy).was_called()
 
-        lovetoys.debug:revert()
+        HooECS.debug:revert()
     end)
 
 
