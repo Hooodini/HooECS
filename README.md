@@ -389,7 +389,11 @@ To run the suite, install busted and simply execute `busted` in the HooECS direc
 
 * * *
 
-Copyright &copy; 2016 Arne Beer ([@Nukesor](https://github.com/Nukesor)) and Rafael Epplée ([@raffomania](https://github.com/raffomania))
+Base Framework
+Copyright &copy; 2016 Arne Beer ([@Nukesor](https://github.com/Nukesor)) and Rafael Epplée ([@raffomania](https://github.com/raffomania)) 
+
+Further development
+Copyright &copy; 2017 Hoodini ([@Hoodini](https://github.com/Hooodini))
 
 This Software is published under the MIT License.
 
