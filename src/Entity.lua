@@ -50,7 +50,7 @@ end
 -- Removes a component from the entity.
 function Entity:remove(name)
     if self.components[name] then
-        if self.components[name].unload then self.components[name].unload() end
+        if self.components[name].onComponentRemoved then self.components[name].onComponentRemoved() end
         self.components[name] = nil
     else
         lovetoys.debug("Entity: Trying to remove unexisting component " .. name .. " from Entity. Please fix this")
