@@ -57,9 +57,11 @@ end
 function EventManager:fireEvent(event)
     local name = event.class.name
     if self.eventListeners[name] then
+        local returns = {}
         for _,listener in pairs(self.eventListeners[name]) do
-            return listener[2](listener[1], event)
+            table.insert(returns, listener[2](listener[1], event))
         end
+        return returns
     end
 end
 
