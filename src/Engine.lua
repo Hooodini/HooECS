@@ -2,6 +2,7 @@
 local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 
 local HooECS = require(folderOfThisFile .. 'namespace')
+
 local Engine = HooECS.class("Engine")
 
 function Engine:initialize()
@@ -337,8 +338,8 @@ function Engine:addEntityToSystem(entity, system) -- luacheck: ignore self
     local categories
     entity, categories = self:meetsRequirements(entity, system)
     if entity then
-        if #categories > 0 then
-            for _, category in pairs() do
+        if categories then
+            for _, category in pairs(categories) do
                 system:addEntity(entity, category)
             end
         else
@@ -351,8 +352,8 @@ function Engine:removeEntityFromSystem(entity, system)
     local categories
     entity, categories = self:meetsRequirements(entity, system)
     if entity then
-        if #categories > 0 then
-            for _, category in pairs() do
+        if categories then
+            for _, category in pairs(categories) do
                 system:removeEntity(entity, category)
             end
         else
@@ -384,9 +385,9 @@ function Engine:meetsRequirements(entity, system)
             end
         end
     end
-    if meetsrequirements == true and categories == nil then
+    if meetsrequirements == true and #categories == 0 then
         return entity
-    elseif meetsrequirements == true then
+    elseif #categories > 0 then
         return entity, categories
     end
 end
