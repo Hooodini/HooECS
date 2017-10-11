@@ -5,7 +5,7 @@ local HooECS = require(folderOfThisFile .. 'namespace')
 local System = HooECS.class("System")
 
 function System:initialize()
-    -- Liste aller Entities, die die RequiredComponents dieses Systems haben
+    -- List of all entities, which have the RequiredComponents of this Systems
     self.targets = {}
     self.active = true
 end

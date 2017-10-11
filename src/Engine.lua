@@ -165,6 +165,7 @@ function Engine:addSystem(system, type)
     for _, entity in pairs(self.entities) do
         self:addEntityToSystem(entity, system)
     end
+
     return system
 end
 
