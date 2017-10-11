@@ -30,6 +30,8 @@ function Entity:add(component)
             self.eventManager:fireEvent(HooECS.ComponentAdded(self, name))
         end
     end
+
+    return self
 end
 
 function Entity:set(component)
@@ -58,6 +60,8 @@ function Entity:remove(name)
     if self.eventManager then
         self.eventManager:fireEvent(HooECS.ComponentRemoved(self, name))
     end
+
+    return self
 end
 
 function Entity:setParent(parent)
