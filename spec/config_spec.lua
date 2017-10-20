@@ -1,4 +1,4 @@
-package.path = package.path .. ";..\\?\\init.lua;..\\?.lua"
+package.path = package.path .. ";.\\?.lua;.\\init.lua"
 
 local classes = {
     "Entity",

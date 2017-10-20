@@ -24,7 +24,7 @@ function Component.create(name, fields, defaults)
     Component.register(component)
 
     return component
-end
+end;
 
 -- Register a Component to make it available to Component.load
 function Component.register(componentClass)

@@ -1,5 +1,10 @@
 -- Getting folder that contains our src
-local folderOfThisFile = (...) .. "."
+local folderOfThisFile = (...)
+if #folderOfThisFile > 6 then
+    folderOfThisFile = folderOfThisFile .. "."
+else
+    folderOfThisFile = folderOfThisFile:match("(.-)[^%/%.]+$")
+end
 
 local HooECS = require(folderOfThisFile .. 'src.namespace')
 
