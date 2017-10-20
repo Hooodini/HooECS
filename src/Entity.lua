@@ -74,6 +74,10 @@ function Entity:getParent()
     return self.parent
 end
 
+function Entity:getChildren()
+    return self.children
+end
+
 function Entity:registerAsChild()
     if self.id then self.parent.children[self.id] = self end
 end
@@ -118,6 +122,62 @@ function Entity:deactivate()
         self.active = false
         self.eventManager:fireEvent(HooECS.EntityDeactivated(self))
     end
+end
+
+function Entity:setUpdate(newUpdateFunction)
+    if type(newUpdateFunction) == "function" then
+        self.update = newUpdateFunction
+        local engine = self:getEngine()
+        if engine then
+            engine:addUpdateEntity(self)
+        end
+    end
+end
+
+-- Returns an entity with all components deeply copied.
+function Entity:copy()
+    function deepCopy(obj, seen)
+        -- Handle non-tables and previously-seen tables.
+        if type(obj) ~= 'table' then return obj end
+        if seen and seen[obj] then return seen[obj] end
+
+        -- New table; mark it as seen an copy recursively.
+        local s = seen or {}
+        local res = setmetatable({}, getmetatable(obj))
+        s[obj] = res
+        local k, v = next(obj)
+        while k do
+            res[deepCopy(k, s)] = deepCopy(v, s) 
+            k, v = next(obj, k)
+        end
+        return res
+    end
+
+    local newEntity = Entity()
+    newEntity.components = deepCopy(self.components)
+
+    return newEntity
+end
+
+-- Returns an entity with references to the components. 
+-- Modifying a component of the origin entity will result in the returned entity being modified too.
+function Entity:shallowCopy()
+    function shallowCopy(obj)
+        if type(obj) ~= 'table' then return obj end
+        local res = setmetatable({}, getmetatable(obj))
+        local k, v = next(obj)
+        while k do
+            res[k] = v
+            k, v = next(obj, k)
+        end
+
+        return res
+    end
+
+    local newEntity = Entity()
+    newEntity.components = shallowCopy(self.components)
+
+    return newEntity
 end
 
 return Entity
