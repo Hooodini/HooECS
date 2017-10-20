@@ -3,7 +3,7 @@ local folderOfThisFile = (...)
 if #folderOfThisFile > 6 then
     folderOfThisFile = folderOfThisFile .. "."
 else
-    --folderOfThisFile = folderOfThisFile:match("(.-)[^%/%.]+$")
+    folderOfThisFile = ""
 end
 
 local HooECS = require(folderOfThisFile .. 'src.namespace')
