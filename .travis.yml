@@ -17,21 +17,17 @@ before_install:
 
 before_script:
   - luarocks install busted
-  - luarocks install luacov-coveralls
   - busted --version
 
 script:
-  - busted --coverage --output=TAP
+  - busted --output=TAP
 
 cache:
   directories:
     - $PWD/lua_installations
 
-after_success:
-  - luacov-coveralls
-
 notifications:
   recipients:
-    - arne@twobeer.de
+    - timo.hoodini@gmail.com
   email:
     on_failure: always
