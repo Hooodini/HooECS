@@ -20,6 +20,7 @@ before_script:
   - busted --version
 
 script:
+  - cd .\HooECS
   - busted --output=TAP
 
 cache:

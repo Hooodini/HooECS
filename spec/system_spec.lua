@@ -1,4 +1,4 @@
-package.path = package.path .. ";.\\?.lua;.\\init.lua"
+package.path = package.path .. ";.\\?.lua;.\\?\\init.lua;.\\init.lua"
 
 local HooECS = require('HooECS')
 HooECS.initialize({ globals = true })
