@@ -12,6 +12,7 @@ function Engine:initialize()
     self.singleRequirements = {}
     self.allRequirements = {}
     self.entityLists = {}
+    self.entityUpdateList = {}
     self.eventManager = HooECS.EventManager()
 
     self.systems = {}
@@ -32,6 +33,11 @@ function Engine:addEntity(entity)
     local newId = #self.entities + 1
     entity.id = newId
     self.entities[entity.id] = entity
+
+    -- If entity implements an update function. Add it to the update table.
+    if type(entity.update) == "function" then
+        self.entityUpdateList[entity.id] = entity
+    end
 
     -- If a rootEntity entity is defined and the entity doesn't have a parent yet, the rootEntity entity becomes the entity's parent
     if entity.parent == nil then
@@ -240,10 +246,23 @@ function Engine:toggleSystem(name)
 end
 
 function Engine:update(dt)
+    for _, entity in pairs(self.entityUpdateList) do
+        if entity.update then
+            entity:update(dt)
+        else
+            self.entityUpdateList[entity.id] = nil
+        end
+    end
     for _, system in ipairs(self.systems["update"]) do
         if system.active then
             system:update(dt)
         end
+    end
+end
+
+function Engine:addUpdateEntity(entity)
+    if entity.id then
+        self.entityUpdateList[entity.id] = entity
     end
 end
 
