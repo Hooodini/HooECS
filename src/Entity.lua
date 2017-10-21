@@ -75,7 +75,9 @@ function Entity:getParent()
 end
 
 function Entity:getChildren()
-    return self.children
+    if #self.children ~= 0 then
+        return self.children
+    end
 end
 
 function Entity:registerAsChild()
@@ -124,12 +126,22 @@ function Entity:deactivate()
     end
 end
 
+function Entity:isActive()
+    return self.active
+end
+
 function Entity:setUpdate(newUpdateFunction)
     if type(newUpdateFunction) == "function" then
         self.update = newUpdateFunction
         local engine = self:getEngine()
         if engine then
             engine:addUpdateEntity(self)
+        end
+    elseif type(newUpdateFunction) == "nil" then
+        self.update = nil
+        local engine = self:getEngine()
+        if engine then
+            engine:removeUpdateEntity(self)
         end
     end
 end

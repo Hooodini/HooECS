@@ -266,6 +266,10 @@ function Engine:addUpdateEntity(entity)
     end
 end
 
+function Engine:removeUpdateEntity(entity)
+    self.entityUpdateList[entity.id] = nil
+end
+
 function Engine:draw()
     for _, system in ipairs(self.systems["draw"]) do
         if system.active then

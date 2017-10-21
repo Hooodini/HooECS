@@ -1,18 +1,16 @@
 <h1 align="center">HooECS</h1>
 
-Until the first release of HooECS, the following links will refer to lovetoys. Use the original instead if you're unsure about using HooECS.
-
-[![GitHub release](https://img.shields.io/github/release/lovetoys/lovetoys.svg?maxAge=2592000)](https://github.com/lovetoys/lovetoys/releases/latest)
-[![Build Status](https://travis-ci.org/lovetoys/lovetoys.svg?branch=master)](https://travis-ci.org/lovetoys/lovetoys) [![Coverage Status](https://coveralls.io/repos/github/lovetoys/lovetoys/badge.svg?branch=master)](https://coveralls.io/github/lovetoys/lovetoys?branch=master)
+[![Build Status](https://travis-ci.org/Hooodini/HooECS.svg?branch=master)](https://travis-ci.org/Hooodini/HooECS)
 
 
 HooECS is an Entity Component System framework for game development with lua. Originally written for the LÖVE 2D game engine, it is actually compatible with pretty much any game that uses lua!
 It is inspired by [Richard Lords Introduction](http://www.richardlord.net/blog/what-is-an-entity-framework) to ECS. If you don't have any idea what this entity component stuff is all about, click that link and give it a read! It's totally worth it!
 The original software was written by Arne Beer and Rafael Epplee under the name [lovetoys](https://github.com/lovetoys/lovetoys).
+For the foreseeable future. All lovetoys projects will stay 100% compatible with HooECS. The unit tests of lovetoys are merely expanded upon. No core behavior is changed!
 
 HooECS is a full-featured game development framework, not only providing the core parts like Entity, Component and System classes but also a Publish-Subscribe messaging system as well as a Scene Graph, enabling you to build even complex games easily and in a structured way.
 
-Though I have not reached version 1.0 yet, the software is well-tested, used in multiple games and considered stable. If you happen to find any bugs, please create an issue and report them. Or, if you're feeling adventurous, create a pull request :)
+Though I have not reached version 1.0 yet, the software is well-tested and considered stable. If you happen to find any bugs, please create an issue and report them. Or, if you're feeling adventurous, create a pull request :)
 
 ## Installation
 
@@ -25,7 +23,7 @@ local HooECS = require('HooECS')
 HooECS.initialize()
 ```
 
-For an example on how to integrate the HooECS with love2d, have a look at the lovetoys example [example](https://github.com/lovetoys/lovetoys-examples) repository. (HooECS will stay fully compatible with lovetoys code for the foreseeable future)
+For an example on how to integrate the HooECS with love2d, have a look at the lovetoys example [example](https://github.com/lovetoys/lovetoys-examples) repository.
 
 ### Configuration
 After requiring, configure HooECS by passing a configuration table to the `initialize` function.
@@ -65,11 +63,7 @@ local class = HooECS.class ()
 ### Entity
 The Entity is the basic building block of your game. You can loosely think of it as an object in your game, such as a player or a wall. From the technical side, it basically represents a collection of components.
 
-####Entity.active
-
-- boolean
-
-Whether this entity is active or not. Inactive entities will not be added to systems and must be activated manually in order to be processed. 
+### **Original Lovetoys API**
 
 #### Entity(parent)
 - **parent** (Entity) - Parent entity
@@ -77,6 +71,11 @@ Whether this entity is active or not. Inactive entities will not be added to sys
 This function returns a new instance of an entity. If you specify a parent entity, you can later access it via the `.parent` property. Also, the parent entity will get a reference to its newly created child, accessible by its `.children` table.
 
 **Note:** If you add an entity without a parent to the engine, the engine will set the root entity as its parent.
+
+#### Entity.eventManager
+
+This is a reference to the eventManager of the engine this entity has been added to.
+Therefore there will be no eventManager until the entity is added to an engine.
 
 #### Entity:setParent(parent)
 - **parent** (Entity) - Parent entity
@@ -91,6 +90,16 @@ Returns the entities parent.
 - **component** - (Component) Instance of a component.
 
 Adds a component to this particular entity.
+
+**HooECS specific**
+
+Returns a reference to the entity to allow for the following syntactic suggar:
+
+```lua
+entity:add(component1)
+      :add(component2)
+      :add(component3)
+```
 
 #### Entity:addMultiple(components)
 - **components** - (List) A list containing instances of components.
@@ -107,6 +116,16 @@ Adds the component to this particular entity. If there already exists a componen
 
 Removes a component from this particular entity.
 
+**HooECS specific**
+
+Returns a reference to the entity to allow for the following syntactic suggar:
+
+```lua
+entity:remove(component1)
+      :remove(component2)
+      :remove(component3)
+```
+
 #### Entity:has(Name)
 - **name** (String) - Name of the component class
 
@@ -122,9 +141,14 @@ Returns the component or `nil` if the Entity has no component with the given `na
 
 Returns the list that contains all components.
 
-#### Entity:getEngine()
+### **HooECS specific API**
 
-Returns the engine this entity belongs to.
+####Entity:isActive()
+
+Returns whether the entity is active or not.
+
+An inactive entity will still be part of the engine, but it will be removed from all systems and won't be updated or drawn.
+Activation will add the entity to all appropriate systems.
 
 #### Entity:activate()
 
@@ -134,7 +158,35 @@ If not already active, adds the entity to all appropriate systems. The entity ne
 
 If active, removes the entity from all systems without removing the entity from the engine.
 
+#### Entity:getEngine()
 
+Returns the engine this entity belongs to.
+
+#### Entity:getChildren()
+
+Returns the children this entity has or nil if there are none.
+
+#### Entity:copy()
+
+Returns a new entity with a deep copy of all components.
+This means there will be a copy of all components and all values will be the same.
+
+#### Entity:shallowCopy()
+
+Returns a new entity with a shallow copy of all components.
+This means modifying the component of one of the two entities will cause modifications to both.
+
+#### Entity:update(dt)
+
+Overwrite this function to get an update callback before any system is updated. Useful for modifying component data before system processing.
+This function has to be set before the entity is added to the engine. Otherwise use Entity:setUpdate() instead.
+
+#### Entity:setUpdate(newUpdateFunction)
+
+- **newUpdateFunction** (Function) - The new function that should be called on update.
+
+Provide an update function to the entity and add it to the engine entity update list if already added to an engine.
+If called without parameter, the current update function is removed and the entity is removed from the engine entity update list.
 
 ### Component
 Collection of functions for creating and working with Component classes. There is no `Component` class; As components are only 'data bags', you can just use standard middleclass classes to implement your components.
@@ -169,10 +221,6 @@ local Color, Transform, Drawable = Component.load({"Color", "Transform", "Drawab
 Color(0, 0, 0)
 ```
 
-#### Component:onComponentRemoved()
-
-Overwrite this method in your component if you want to react when the component is removed from it's entity.
-
 #### Component.create(name, [fields, defaults])
 - **fields** (Table) - A list of Strings specifying the property names of the new component. The constructor of the component class will accept each of these properties as arguments, in the order they appear in the `fields` list.
 - **defaults** (Table) - Key value pairs where each pair describes the default value for the property named like the pairs key.
@@ -187,6 +235,12 @@ local Color = Component.create("Color",
 -- Create a component for the color violet
 Color(255)
 ```
+
+### **HooECS specific API**
+
+#### Component:onComponentRemoved()
+
+Overwrite this method in your component if you want to react when the component is removed from it's entity.
 
 ### System
 Systems provide the functionality for your game. The engine manages all Systems and assigns all entities with the right components to them.
@@ -245,6 +299,8 @@ This method is going to be called by the engine every draw.
 - **entity** (Entity) - The entity added
 
 Overwrite this method in your system if you want to react when new entities are added to it.
+
+### **HooECS specific API**
 
 #### System:onRemoveEntity(entity)
 - **entity** (Entity) - The entity removed
@@ -371,6 +427,9 @@ Removes a listener from this particular Event.
 - **event** (Event) - Instance of the event
 
 This function pipes the event through to every listener that is registered to the class-name of the event and triggers.
+
+**HooECS specific**
+
 Events can return data which will be stored in an array table. Each entry will be the return value(s) from a specific listener.
 Useful to get feedback on whether the event was used or generally return data. Returns nil if not data was returned by the listeners.
 
