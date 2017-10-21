@@ -1,5 +1,6 @@
 <h1 align="center">HooECS</h1>
 
+[![Latest Release](https://img.shields.io/badge/release-v0.1-blue.svg)](https://github.com/Hooodini/HooECS/releases/latest)
 [![Build Status](https://travis-ci.org/Hooodini/HooECS.svg?branch=master)](https://travis-ci.org/Hooodini/HooECS)
 
 
