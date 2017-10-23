@@ -8,6 +8,7 @@ end
 table.remove(path, #path)
 table.remove(path, #path)
 folderOfThisFile = table.concat(path)
+path = nil;
 
 local ComponentAdded = require(folderOfThisFile .. '.namespace').class("ComponentAdded")
 
