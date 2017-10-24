@@ -1,5 +1,6 @@
 <h1 align="center">HooECS</h1>
 
+[![Latest Release](https://img.shields.io/badge/release-v0.1-blue.svg)](https://github.com/Hooodini/HooECS/releases/latest)
 [![Build Status](https://travis-ci.org/Hooodini/HooECS.svg?branch=master)](https://travis-ci.org/Hooodini/HooECS)
 
 
@@ -60,10 +61,10 @@ local eventManager = HooECS.EventManager()
 local class = HooECS.class ()
 ```
 
+Sidenote: All new functionality in HooECS is labeled as HooECS specific.
+
 ### Entity
 The Entity is the basic building block of your game. You can loosely think of it as an object in your game, such as a player or a wall. From the technical side, it basically represents a collection of components.
-
-### **Original Lovetoys API**
 
 #### Entity(parent)
 - **parent** (Entity) - Parent entity
@@ -91,7 +92,7 @@ Returns the entities parent.
 
 Adds a component to this particular entity.
 
-**HooECS specific**
+*HooECS specific*
 
 Returns a reference to the entity to allow for the following syntactic suggar:
 
@@ -116,7 +117,7 @@ Adds the component to this particular entity. If there already exists a componen
 
 Removes a component from this particular entity.
 
-**HooECS specific**
+*HooECS specific*
 
 Returns a reference to the entity to allow for the following syntactic suggar:
 
@@ -141,9 +142,9 @@ Returns the component or `nil` if the Entity has no component with the given `na
 
 Returns the list that contains all components.
 
-### **HooECS specific API**
+### HooECS specific API
 
-####Entity:isActive()
+#### Entity:isActive()
 
 Returns whether the entity is active or not.
 
@@ -428,10 +429,10 @@ Removes a listener from this particular Event.
 
 This function pipes the event through to every listener that is registered to the class-name of the event and triggers.
 
-**HooECS specific**
+*HooECS specific*
 
 Events can return data which will be stored in an array table. Each entry will be the return value(s) from a specific listener.
-Useful to get feedback on whether the event was used or generally return data. Returns nil if not data was returned by the listeners.
+Useful to get feedback on whether the event was used or generally return data. Returns nil if no data was returned by the listeners.
 
 ```
 returns = listener:fireEvent(event)
