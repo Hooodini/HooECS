@@ -4,6 +4,11 @@ local folderOfThisFile = (...):match("(.-)[^%/%.]+$")
 local HooECS = require(folderOfThisFile .. 'namespace')
 local System = HooECS.class("System")
 
+function System.create(name)
+    HooI.class("ButtonDrawSystem", HooI.system)
+    return HooECS.class(name, System)
+end
+
 function System:initialize()
     -- List of all entities, which have the RequiredComponents of this Systems
     self.targets = {}
