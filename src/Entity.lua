@@ -75,7 +75,7 @@ function Entity:getParent()
 end
 
 function Entity:getChildren()
-    if #self.children ~= 0 then
+    if next(self.children) then
         return self.children
     end
 end
