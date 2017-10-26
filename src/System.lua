@@ -5,7 +5,6 @@ local HooECS = require(folderOfThisFile .. 'namespace')
 local System = HooECS.class("System")
 
 function System.create(name)
-    HooI.class("ButtonDrawSystem", HooI.system)
     return HooECS.class(name, System)
 end
 
