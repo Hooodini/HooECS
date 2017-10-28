@@ -141,4 +141,43 @@ describe('Entity', function()
         assert.are.equal(entity:get("TestComponent").num, 21)
         assert.are.equal(newEntity:get("TestComponent").num, 21)
     end)
+
+    it('calls Component:removedFromEntity and Component:addedToEntity when appropriate', function()
+        local tempComponent = TestComponent()
+        testComponent.addedToEntity = function(self, entity)
+            entity.num = 1
+            self.otherNum = 1
+        end
+        tempComponent.addedToEntity = function (self, entity)
+            entity.num = 2
+            self.otherNum = 2
+        end
+        tempComponent.removedFromEntity = function(self, entity)
+            entity.num = 3
+            self.otherNum = 3
+        end
+
+        assert.are.equal(entity.num, nil)
+        assert.are.equal(testComponent.otherNum, nil)
+
+        entity:add(testComponent)
+        assert.are.equal(entity.num, 1)
+        assert.are.equal(testComponent.otherNum, 1)
+
+        entity:set(tempComponent)
+        assert.are.equal(entity.num, 2)
+        assert.are.equal(tempComponent.otherNum, 2)
+
+        entity:remove("TestComponent")
+        assert.are.equal(entity.num, 3)
+        assert.are.equal(tempComponent.otherNum, 3)
+    end)
+
+    it(':getChildren() returns children or nil if non exit', function()
+        assert.are.equal(entity:getChildren(), nil)
+        entity1:setParent(entity)
+        assert.are.equal(type(entity:getChildren()), "table")
+        local k, v = next(entity:getChildren())
+        assert.are.equal(v, entity1)
+    end)
 end)

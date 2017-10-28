@@ -239,7 +239,11 @@ Color(255)
 
 ### **HooECS specific API**
 
-#### Component:onComponentRemoved()
+#### Component:addedToEntity(entity)
+
+Overwrite this method in your component if you want to react when the component is added to the entity.
+
+#### Component:removedFromEntity(entity)
 
 Overwrite this method in your component if you want to react when the component is removed from it's entity.
 
@@ -277,6 +281,11 @@ end
 
 return CustomSystem
 ```
+
+#### System.create(name)
+- **name** (String) - The name of the system
+
+**Note:** Shorthand for class(name, System)
 
 #### System:requires() return {"Componentname1", "Componentname2", ...} end
 This function defines what kind of entities shall be managed by this System. The function has to be overwritten in every System or it won't get any entities! The strings inside the returned table define the components a entity has to contain, to be managed by the System. Those entities are accessible in `self.targets`.

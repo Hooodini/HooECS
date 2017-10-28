@@ -248,17 +248,6 @@ describe('Engine', function()
         assert.are.equal(updateSystem.entitiesAdded, 1)
     end)
 
-    it('calls UpdateSystem:onComponentRemoved when a component is removed from UpdateSystem', function()
-        assert.are.equal(updateSystem.entitiesRemoved, 0)
-
-        entity:add(Component1())
-        engine:addSystem(updateSystem)
-        engine:addEntity(entity)
-        engine:removeEntity(entity)
-
-        assert.are.equal(updateSystem.entitiesRemoved, 1)
-    end)
-
     it(':addSystem(system, "derp") fails', function()
         local debug_spy = spy.on(HooECS, 'debug')
 

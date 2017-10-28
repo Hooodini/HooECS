@@ -31,6 +31,8 @@ function Entity:add(component)
         end
     end
 
+    if component.addedToEntity then component:addedToEntity(self) end
+
     return self
 end
 
@@ -39,6 +41,9 @@ function Entity:set(component)
     if self.components[name] == nil then
         self:add(component)
     else
+        if self.components[name].addedToEntity ~= component.addedToEntity and component.addedToEntity then
+            component:addedToEntity(self)
+        end
         self.components[name] = component
     end
 end
@@ -52,7 +57,10 @@ end
 -- Removes a component from the entity.
 function Entity:remove(name)
     if self.components[name] then
-        if self.components[name].onComponentRemoved then self.components[name].onComponentRemoved() end
+        if self.components[name].removedFromEntity then
+            self.components[name]:removedFromEntity(self)
+        end
+
         self.components[name] = nil
     else
         HooECS.debug("Entity: Trying to remove unexisting component " .. name .. " from Entity. Please fix this")
@@ -75,7 +83,7 @@ function Entity:getParent()
 end
 
 function Entity:getChildren()
-    if #self.children ~= 0 then
+    if next(self.children) then
         return self.children
     end
 end

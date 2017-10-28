@@ -89,4 +89,8 @@ describe('System', function()
         HooECS.debug:revert()
     end)
 
+    it('.create() functions as shorthand for Class("name", System)', function()
+        assert.are.equal(System.create("Test").name, HooECS.class("Test", System).name)
+    end)
+
 end)
