@@ -54,6 +54,12 @@ function Entity:addMultiple(componentList)
     end
 end
 
+function Entity:setMultiple(componentList)
+    for _, component in pairs(componentList) do
+        self:set(component)
+    end
+end
+
 -- Removes a component from the entity.
 function Entity:remove(name)
     if self.components[name] then
@@ -155,7 +161,7 @@ function Entity:setUpdate(newUpdateFunction)
 end
 
 -- Returns an entity with all components deeply copied.
-function Entity:copy()
+function Entity:copy(componentList)
     function deepCopy(obj, seen)
         -- Handle non-tables and previously-seen tables.
         if type(obj) ~= 'table' then return obj end
@@ -176,12 +182,18 @@ function Entity:copy()
     local newEntity = Entity()
     newEntity.components = deepCopy(self.components)
 
+    if componentList then
+        if type(componentList) == "table" then
+            newEntity:setMultiple(componentList)
+        end
+    end
+
     return newEntity
 end
 
 -- Returns an entity with references to the components. 
 -- Modifying a component of the origin entity will result in the returned entity being modified too.
-function Entity:shallowCopy()
+function Entity:shallowCopy(componentList)
     function shallowCopy(obj)
         if type(obj) ~= 'table' then return obj end
         local res = setmetatable({}, getmetatable(obj))
@@ -196,6 +208,12 @@ function Entity:shallowCopy()
 
     local newEntity = Entity()
     newEntity.components = shallowCopy(self.components)
+
+    if componentList then
+        if type(componentList) == "table" then
+            newEntity:setMultiple(componentList)
+        end
+    end
 
     return newEntity
 end

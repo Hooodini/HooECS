@@ -144,6 +144,9 @@ Returns the list that contains all components.
 
 ### HooECS specific API
 
+#### Entity:setMultiple(components)
+- **components** (List) - A list containing instances of components.
+
 #### Entity:isActive()
 
 Returns whether the entity is active or not.
@@ -167,15 +170,23 @@ Returns the engine this entity belongs to.
 
 Returns the children this entity has or nil if there are none.
 
-#### Entity:copy()
+#### Entity:copy(componentList)
+
+- **componentList** (List) - A table containing components
 
 Returns a new entity with a deep copy of all components.
 This means there will be a copy of all components and all values will be the same.
 
-#### Entity:shallowCopy()
+If a componentList is supplied, all components contained will be set (overwrite components with the same name).
+
+#### Entity:shallowCopy(componentList)
+
+- **componentList** (List) - A table containing components
 
 Returns a new entity with a shallow copy of all components.
 This means modifying the component of one of the two entities will cause modifications to both.
+
+If a componentList is supplied, all components contained will be set (overwrite components with the same name).
 
 #### Entity:update(dt)
 

@@ -133,6 +133,18 @@ describe('Entity', function()
         assert.are.equal(newEntity:get("TestComponent").num, 21)
     end)
 
+    it(':copy(components) creates a shallow copy of the entity replacing components with the provided list', function()
+        local tempComponent = TestComponent1()
+        tempComponent.num = 1
+        testComponent1 = 2
+        testComponent.num = 42
+        entity:add(testComponent)
+        local newEntity = entity:copy({tempComponent})
+        newEntity:get("TestComponent").num = 21
+        assert.are.equal(entity:get("TestComponent").num, 42)
+        assert.are.equal(newEntity:get("TestComponent").num, 21)
+    end)
+
     it(':shallowCopy() creates a shallow copy of the entity', function()
         testComponent.num = 42
         entity:add(testComponent)
@@ -140,6 +152,20 @@ describe('Entity', function()
         newEntity:get("TestComponent").num = 21
         assert.are.equal(entity:get("TestComponent").num, 21)
         assert.are.equal(newEntity:get("TestComponent").num, 21)
+    end)
+
+    it(':shallowCopy(components) creates a shallow copy of the entity replacing components with the provided list', function()
+        local tempComponent = TestComponent1()
+        tempComponent.num = 1
+        testComponent1.num = 2
+        testComponent.num = 42
+        entity:add(testComponent)
+        entity:add(testComponent1)
+        local newEntity = entity:shallowCopy({tempComponent})
+        newEntity:get("TestComponent").num = 21
+        assert.are.equal(entity:get("TestComponent").num, 21)
+        assert.are.equal(newEntity:get("TestComponent").num, 21)
+        assert.are.equal(newEntity:get("TestComponent1").num, 1)
     end)
 
     it('calls Component:removedFromEntity and Component:addedToEntity when appropriate', function()
