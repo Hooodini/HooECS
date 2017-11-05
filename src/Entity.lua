@@ -185,6 +185,8 @@ function Entity:copy(componentList)
     if componentList then
         if type(componentList) == "table" then
             newEntity:setMultiple(componentList)
+        else
+            HooECS.debug("Entity:copy() componentList is not a table!")
         end
     end
 
@@ -212,6 +214,8 @@ function Entity:shallowCopy(componentList)
     if componentList then
         if type(componentList) == "table" then
             newEntity:setMultiple(componentList)
+        else
+            HooECS.debug("Entity:shallowCopy() componentList is not a table!")
         end
     end
 

@@ -7,6 +7,7 @@ local Engine = HooECS.class("Engine")
 
 function Engine:initialize()
     self.entities = {}
+    self.entityId = 1
     self.rootEntity = HooECS.Entity()
     self.rootEntity.engine = self
     self.singleRequirements = {}
@@ -30,7 +31,8 @@ function Engine:addEntity(entity)
     -- Setting engine eventManager as eventManager for entity
     entity.eventManager = self.eventManager
     -- Getting the next free ID or insert into table
-    local newId = #self.entities + 1
+    local newId = self.entityId
+    self.entityId = self.entityId + 1
     entity.id = newId
     self.entities[entity.id] = entity
 
