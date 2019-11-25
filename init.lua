@@ -1,6 +1,6 @@
 -- Getting folder that contains our src
 local folderOfThisFile = (...)
-if #folderOfThisFile > 6 then
+if #folderOfThisFile >= 6 then
     folderOfThisFile = folderOfThisFile .. "."
 else
     folderOfThisFile = ""
